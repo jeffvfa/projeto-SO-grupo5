@@ -1,7 +1,10 @@
+#!/usr/bin/python
+ # -*- coding: utf-8 -*-
+from queue import Queue
+
 class process:
     '''
     a process cointains:
-
         PID
         priority
         offset
@@ -23,6 +26,37 @@ class process:
 
     def printProcess(self):
         print('  PID: {}\n  priority: {}\n  offset: {}\n  num_of_blocks: {}\n  printer: {}\n  scanner: {}\n  modems: {}\n  drivers: {}\n\n\n'.format(self.PID, self.priority, self.offset, self.num_of_blocks, self.printer, self.modems,self.scanner, self.drivers))
+
+
+
+real_time = Queue()
+priority_1 = Queue()
+priority_2 = Queue()
+priority_3 = Queue()
+
+def sizeOfAllQueues():
+    return real_time.qsize() + priority_1.qsize() + priority_2.qsize() + priority_3.qsize()
+
+def putInQueue(process):
+    if sizeOfAllQueues()<1000:
+        if process.priority == 0:
+            real_time.put()
+        elif process.priority == 1:
+            priority_1.put()
+        elif process.priority == 2:
+            priority_2.put()
+        else:
+            priority_3.put()
+    
+def getFromQueue():
+    if real_time.qsize() != 0:
+        return real_time.get()
+    elif priority_1.qsize() != 0:
+        return priority_1.get()
+    elif priority_2.qsize() != 0:
+        return priority_2.get()
+    else:
+        return priority_3.get()
 
 
 def createAllProcesses():
@@ -49,6 +83,8 @@ def createAllProcesses():
 
 def main():
     print('olá\n')
+    print(sizeOfAllQueues())
+
 
     createAllProcesses()
 if __name__ == '__main__':
